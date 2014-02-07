@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--ChatServer configuration file-->
+<parameters>
+  <port>5283</port>
+  <address>127.0.0.1</address>
+  <dbase>Data Source=.\SQLEXPRESS;Initial Catalog=ChatBase;Integrated Security=True;</dbase>
+</parameters> 
