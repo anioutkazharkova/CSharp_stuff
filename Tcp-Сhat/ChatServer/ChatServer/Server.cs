@@ -9,7 +9,8 @@ using System.Threading;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
 using System.Data;
-
+using System.Configuration;
+using System.Collections.Specialized;
 
 namespace ChatServer
 {
@@ -62,15 +63,20 @@ namespace ChatServer
         /// </summary>
         private void SetUpConfiguration()
         {
-            //Считывание параметров (порт, адрес и строка подключения) из xml-файла
-            XmlDocument doc = new XmlDocument();
-            doc.Load("ServerConfig.xml");
-            XmlElement root = doc.DocumentElement;
-            XmlNodeList nodes = root.ChildNodes;
+            ////Считывание параметров (порт, адрес и строка подключения) из xml-файла
+            //XmlDocument doc = new XmlDocument();
+            //doc.Load("ServerConfig.xml");
+            //XmlElement root = doc.DocumentElement;
+            //XmlNodeList nodes = root.ChildNodes;
 
-            port = int.Parse(nodes[0].InnerText);
-            address = IPAddress.Parse(nodes[1].InnerText);
-            connectionString = nodes[2].InnerText;
+            //port = int.Parse(nodes[0].InnerText);
+            //address = IPAddress.Parse(nodes[1].InnerText);
+            //connectionString = nodes[2].InnerText;
+
+            //Getting parametrs from config
+            port = int.Parse(ConfigurationManager.AppSettings.Get("port"));
+            address = IPAddress.Parse(ConfigurationManager.AppSettings.Get("address"));
+            connectionString = ConfigurationManager.AppSettings.Get("dbase");
          }
 
         /// <summary>
@@ -278,12 +284,13 @@ namespace ChatServer
                 command.Connection = connection;
                 command.CommandText = query;
 
-                SqlDataReader reader = command.ExecuteReader();
-                while (reader.Read())
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    users.Add(reader.GetValue(0).ToString());
+                    while (reader.Read())
+                    {
+                        users.Add(reader.GetValue(0).ToString());
+                    }
                 }
-
                 connection.Close();
             }
 
@@ -376,14 +383,15 @@ namespace ChatServer
                 
                 command.CommandText = query;
 
-                SqlDataReader reader= command.ExecuteReader(); 
-               
-               //Полученные записи сохраняются в строковом формате: ^^ - разделитель между записями, ^? - разделитель полей
-                while (reader.Read())
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    Log += string.Format("{0}^?{1}^?{2}^^",reader.GetValue(0).ToString(),reader.GetValue(1).ToString(),reader.GetValue(2).ToString());
-                }
 
+                    //Полученные записи сохраняются в строковом формате: ^^ - разделитель между записями, ^? - разделитель полей
+                    while (reader.Read())
+                    {
+                        Log += string.Format("{0}^?{1}^?{2}^^", reader.GetValue(0).ToString(), reader.GetValue(1).ToString(), reader.GetValue(2).ToString());
+                    }
+                }
                 connection.Close();
             }
 

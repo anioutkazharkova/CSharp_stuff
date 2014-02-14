@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.IO;
+using ClientLibrary;
 
 
 
@@ -17,7 +18,7 @@ namespace ChatServer
     /// <summary>
     /// Класс для работы с пользователем со стороны сервера
     /// </summary>
-    class ChatUser
+    class ChatUser:Protocol
     {
         //Запущенный tcp-клиент
         internal TcpClient client;

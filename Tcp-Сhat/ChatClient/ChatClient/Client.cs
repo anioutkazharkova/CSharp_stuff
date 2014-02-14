@@ -7,14 +7,16 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Xml;
 using System.IO;
-
+using System.Configuration;
+using System.Collections.Specialized;
+using ClientLibrary;
 
 namespace ChatClient
 {
     /// <summary>
     /// Класс клиента чата
     /// </summary>
-  public  class Client
+  public  class Client:Protocol
     {
       //Tcp-клиент для подключения
        TcpClient client;
@@ -121,13 +123,17 @@ namespace ChatClient
       /// </summary>
         private void SetUpConfiguration()
         {
-            XmlDocument doc = new XmlDocument();
-            doc.Load("ServerConfig.xml");
-            XmlElement root = doc.DocumentElement;
-            XmlNodeList nodes = root.ChildNodes;
+            //XmlDocument doc = new XmlDocument();
+            //doc.Load("ServerConfig.xml");
+            //XmlElement root = doc.DocumentElement;
+            //XmlNodeList nodes = root.ChildNodes;
 
-            port = int.Parse(nodes[0].InnerText);
-            address = nodes[1].InnerText;
+            //port = int.Parse(nodes[0].InnerText);
+            //address = nodes[1].InnerText;
+
+            port = int.Parse(ConfigurationManager.AppSettings.Get("port"));
+            address = ConfigurationManager.AppSettings.Get("address");
+            
         }
                 
       /// <summary>
